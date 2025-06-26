@@ -1,20 +1,22 @@
-from pydantic import BaseModel, Field
-from typing import Literal, Optional, Dict, Any
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Literal
+
+class PredictDirectRequest(BaseModel):
+    surface_reelle_bati: float = Field(..., alias="Surface reelle bati")
+    surface_terrain: float = Field(..., alias="Surface terrain")
+    nombre_de_lots: float = Field(..., alias="Nombre de lots")
+    type_local: Literal["Appartement", "Maison"] = Field(..., alias="Type local")
+
+    model_config = ConfigDict(
+        populate_by_name=True,
+        extra="forbid"
+    )
 
 
-class Features(BaseModel):
-    surface_bati: float = Field(..., gt=0, description="Surface réelle bâtie (m²)")
-    nombre_pieces: int = Field(..., gt=0, description="Nombre de pièces principales")
-    type_local: Literal["Appartement", "Maison"]
-    surface_terrain: Optional[float] = Field(0, ge=0, description="Surface terrain (m²)")
-    nombre_lots: Optional[int] = Field(1, ge=1, description="Nombre de lots")
+class PredictRequest(BaseModel):
+    ville: str
+    features: PredictDirectRequest
 
-class PredictRequest(BaseModel): 
-    ville: Optional[Literal["lille","bordeaux"]]
-    Features: Optional[Features]
-
-class PredictDirectRequest(Features):
-    pass 
 
 class PredictResponse(BaseModel):
     prix_m2_estime: float

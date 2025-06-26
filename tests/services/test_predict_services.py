@@ -1,29 +1,78 @@
 import pytest
-from app.services.predict_service import PredictService
+from app.services.predict_service import PredictionService
+from app.schemas.prediction_schema import PredictResponse
 
-predict_service = PredictService()
+@pytest.mark.asyncio
+async def test_predict_success_appartement():
+    service = PredictionService()
 
-sample_features = {
-    "surface_bati": 100,
-    "nombre_pieces": 4,
-    "type_local": "Appartement",
-    "surface_terrain": 0,
-    "nombre_lots": 1
-}
+    payload = {
+        "Surface reelle bati": 100,
+        "Surface terrain": 0,
+        "Nombre de lots": 1,
+        "Type local": "Appartement"
+    }
 
-def test_predict_lille_model():
-    result = predict_service.predict("lille", sample_features)
-    assert isinstance(result, dict)
-    assert "prix_m2_estime" in result
-    assert result["ville_modele"] == "Lille"
+    result = await service.predict("lille", payload)
 
-def test_predict_bordeaux_model():
-    result = predict_service.predict("bordeaux", sample_features)
-    assert isinstance(result, dict)
-    assert "prix_m2_estime" in result
-    assert result["ville_modele"] == "Bordeaux"
+    assert isinstance(result, PredictResponse)
+    assert result.ville_modele == "Lille"
+    assert result.model is not None
+    assert isinstance(result.prix_m2_estime, float)
 
-def test_predict_invalid_city():
-    with pytest.raises(ValueError) as exc:
-        predict_service.predict("paris", sample_features)
-    assert "Ville inconnue" in str(exc.value)
+@pytest.mark.asyncio
+async def test_predict_success_maison():
+    service = PredictionService()
+
+    payload = {
+        "Surface reelle bati": 150,
+        "Surface terrain": 300,
+        "Nombre de lots": 1,
+        "Type local": "Maison"
+    }
+
+    result = await service.predict("lille", payload)
+
+    assert isinstance(result, PredictResponse)
+    assert result.ville_modele == "Lille"
+    assert result.model is not None
+    assert isinstance(result.prix_m2_estime, float)
+
+@pytest.mark.asyncio
+async def test_predict_raises_unknown_city():
+    service = PredictionService()
+    payload = {
+        "Surface reelle bati": 90,
+        "Surface terrain": 10,
+        "Nombre de lots": 1,
+        "Type local": "Appartement"
+    }
+
+    with pytest.raises(ValueError, match="Modèle pour la ville 'paris' non disponible"):
+        await service.predict("paris", payload)
+
+@pytest.mark.asyncio
+async def test_predict_raises_missing_field():
+    service = PredictionService()
+    payload = {
+        "Surface reelle bati": 90,
+        "Surface terrain": 10,
+        "Nombre de lots": 1
+        # "Type local" manquant
+    }
+
+    with pytest.raises(ValueError, match="Le champ 'Type local' est obligatoire"):
+        await service.predict("lille", payload)
+
+@pytest.mark.asyncio
+async def test_predict_raises_unknown_type_local():
+    service = PredictionService()
+    payload = {
+        "Surface reelle bati": 90,
+        "Surface terrain": 10,
+        "Nombre de lots": 1,
+        "Type local": "Château"
+    }
+
+    with pytest.raises(ValueError, match="Modèle pour le type 'Château' à 'lille' non disponible"):
+        await service.predict("lille", payload)
