@@ -3,6 +3,7 @@ python-dotenv
 fastapi
 uvicorn
 pytest
+pytest-asyncio
 httpx
 numpy
 pandas
@@ -10,3 +11,4 @@ matplotlib
 seaborn
 scikit-learn
 joblib
+xgboost
