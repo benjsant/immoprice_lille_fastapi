@@ -30,33 +30,43 @@ Nous avons utilisé les données de **l’année 2022**, filtrées sur **la vill
 
 ```bash
 immoprice_lille_fastapi/
-├── app/
+├── app
+│   ├── __init__.py
 │   ├── main.py
 │   ├── model_loader.py
-│   ├── routes/
-│   │   └── predict_routes.py
-│   ├── schemas/
+│   ├── models
+│   │   ├── appartement_xgboost.pkl
+│   │   └── maison_decision_tree.pkl
+│   ├── routes
+│   │   ├── __init__.py
+│   │   └──  predict_routes.py
+│   ├── schemas
 │   │   └── prediction_schema.py
-│   └── services/
-│       └── predict_service.py
-├── data/
-│   └── [à créer à partir des données DVF]
+│   └── services
+│       └──predict_service.py
+├── data
+│   ├── bordeaux_2022.csv
+│   └── lille_2022.csv
 ├── export_csv.py
-├── img/
+├── img
+│   └── background_immporice_lille_readme.png
 ├── LICENSE
-├── models/
+├── models
 │   ├── appartement_xgboost.pkl
 │   └── maison_decision_tree.pkl
-├── notebooks/
+├── notebooks
 │   ├── phase_1_lille.ipynb
 │   └── phase_2_bordeaux.ipynb
 ├── pytest.ini
 ├── README.md
 ├── requirements.txt
-└── tests/
-    ├── routes/
-    └── services/
-
+└── tests
+    ├── routes
+    │   ├── __init__.py
+    │   └── test_predict_routes.py
+    └── services
+        ├── __init__.py
+        └── test_predict_services.py
 ```
 
 * * *
@@ -69,8 +79,7 @@ immoprice_lille_fastapi/
 - Sélectionner le meilleur modèle pour chaque type de logement.
 - Tester la **généralisation** des modèles sur Bordeaux.
 - Déployer les modèles via une **API REST FastAPI**.
-    
-
+  
 * * *
 
 ## 🧠 Modèles entraînés
