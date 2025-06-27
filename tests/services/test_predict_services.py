@@ -4,6 +4,14 @@ from app.schemas.prediction_schema import PredictResponse
 
 @pytest.mark.asyncio
 async def test_predict_success_appartement():
+    """
+    Teste la prédiction réussie pour un appartement.
+
+    Crée un service de prédiction et envoie un payload valide pour un appartement 
+    à Lille. Vérifie que le résultat est une instance de PredictResponse, que 
+    la ville du modèle est 'Lille', que le modèle n'est pas None, et que le 
+    prix estimé par mètre carré est un float.
+    """
     service = PredictionService()
 
     payload = {
@@ -22,6 +30,14 @@ async def test_predict_success_appartement():
 
 @pytest.mark.asyncio
 async def test_predict_success_maison():
+    """
+    Teste la prédiction réussie pour une maison.
+
+    Crée un service de prédiction et envoie un payload valide pour une maison 
+    à Lille. Vérifie que le résultat est une instance de PredictResponse, que 
+    la ville du modèle est 'Lille', que le modèle n'est pas None, et que le 
+    prix estimé par mètre carré est un float.
+    """
     service = PredictionService()
 
     payload = {
@@ -40,6 +56,13 @@ async def test_predict_success_maison():
 
 @pytest.mark.asyncio
 async def test_predict_raises_unknown_city():
+    """
+    Teste la gestion des villes inconnues.
+
+    Crée un service de prédiction et envoie un payload valide pour un appartement 
+    à Paris. Vérifie que la méthode lève une exception ValueError avec le message 
+    approprié indiquant que le modèle pour la ville 'paris' n'est pas disponible.
+    """
     service = PredictionService()
     payload = {
         "Surface reelle bati": 90,
@@ -53,6 +76,14 @@ async def test_predict_raises_unknown_city():
 
 @pytest.mark.asyncio
 async def test_predict_raises_missing_field():
+    """
+    Teste la gestion des champs manquants.
+
+    Crée un service de prédiction et envoie un payload sans le champ 'Type local' 
+    pour un appartement à Lille. Vérifie que la méthode lève une exception 
+    ValueError avec le message approprié indiquant que le champ 'Type local' est 
+    obligatoire.
+    """
     service = PredictionService()
     payload = {
         "Surface reelle bati": 90,
@@ -66,6 +97,14 @@ async def test_predict_raises_missing_field():
 
 @pytest.mark.asyncio
 async def test_predict_raises_unknown_type_local():
+    """
+    Teste la gestion des types de local inconnus.
+
+    Crée un service de prédiction et envoie un payload avec un type de local 
+    inconnu ('Château') pour un appartement à Lille. Vérifie que la méthode lève 
+    une exception ValueError avec le message approprié indiquant que le modèle 
+    pour le type 'Château' à 'lille' n'est pas disponible.
+    """
     service = PredictionService()
     payload = {
         "Surface reelle bati": 90,
